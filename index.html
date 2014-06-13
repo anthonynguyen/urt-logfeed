@@ -10,7 +10,7 @@
 		<script>
 			var socket = io();
 			socket.on('chat-message', function(msg){
-				$('#Stuff').append($('<li>').text(msg));
+				document.getElementById("Stuff").innerHTML += "<li>" + msg + "</li>";
 			});
 		</script>
 	</body>

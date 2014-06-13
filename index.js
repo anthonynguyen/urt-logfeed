@@ -1,6 +1,7 @@
-var server = require('http').createServer(handler)
+var server = require('http').createServer(handler);
 var io = require('socket.io')(server);
 var fs = require('fs');
+var config = require('./config');
 
 server.listen(3000);
 
