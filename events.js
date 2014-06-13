@@ -1,50 +1,61 @@
+
 eventParsers = {
-	InitGameParser: function(data) {
-		console.log("InitGame parsed.");
+	InitGameParser: function(rawdata) {
+		var data = {};
+		console.log(rawdata);
+		var parts = rawdata.split("\\");
+		parts.splice(0, 1); // The data section of an InitGame line starts with a \
+		for (var i = 0; i < parts.length / 2; i += 2) {
+			data[parts[i]] = parts[i + 1];
+		}
 		return data;
 	},
-	InitAuthParser: function(data) {
-		console.log("InitAuth parsed.");
-		return data;
+	InitAuthParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	ShutdownGameParser: function(data) {
-		console.log("ShutdownGame parsed.");
-		return data;
+	ShutdownGameParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	ClientConnectParser: function(data) {
-		console.log("ClientConnect parsed.");
-		return data;
+	ClientConnectParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	ClientDisconnectParser: function(data) {
-		console.log("ClientDisconnect parsed.");
-		return data;
+	ClientDisconnectParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	ClientUserinfoParser: function(data) {
-		console.log("ClientUserinfo parsed.");
-		return data;
+	ClientUserinfoParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	ClientUserinfoChangedParser: function(data) {
-		console.log("ClientUserinfoChanged parsed.");
-		return data;
+	ClientUserinfoChangedParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	ClientSpawnParser: function(data) {
-		console.log("ClientSpawn parsed.");
-		return data;
+	ClientSpawnParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	ClientBeginParser: function(data) {
-		console.log("ClientBegin parsed.");
-		return data;
+	ClientBeginParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	sayparser: function(data) {
-		console.log("say parsed.");
-		return data;
+	sayparser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	sayteamParser: function(data) {
-		console.log("sayteam parsed.");
-		return data;
+	sayteamParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	},
-	KillParser: function(data) {
-		console.log("Kill parsed.");
-		return data;
+	KillParser: function(rawdata) {
+		var data = {};
+		return rawdata;
+	},
+	SurvivorWinnerParser: function(rawdata) {
+		var data = {};
+		return rawdata;
 	}
 }

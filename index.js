@@ -11,8 +11,7 @@ tail = new Tail(config.logPath);
 server.listen(3000);
 
 function handler (req, res) {
-	fs.readFile(__dirname + '/index.html',
-	function (err, data) {
+	fs.readFile(__dirname + '/index.html', function (err, data) {
 		if (err) {
 			res.writeHead(500);
 			return res.end('Error loading index.html');
@@ -23,6 +22,7 @@ function handler (req, res) {
 	});
 }
 
+var gameVars = {};
 var clients = {};
 
 function parseLine(line) {
@@ -37,6 +37,9 @@ function parseLine(line) {
 	event.type = eventType;
 	if (event.type + "Parser" in eventParsers) {
 		event.data = eventParsers[event.type + "Parser"](rawEventData);
+		if (event.type == "InitGame") {
+			gameVars = event.data;
+		}
 		return event;
 	} else {
 		return null;

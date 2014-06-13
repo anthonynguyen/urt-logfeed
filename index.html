@@ -10,7 +10,7 @@
 		<script>
 			var socket = io();
 			socket.on('event', function(msg){
-				document.getElementById("log").innerHTML += "<li>" +msg.type+": "+ msg.data + "</li>";
+				document.getElementById("log").innerHTML += "<li>" +msg.type+": "+ JSON.stringify(msg.data) + "</li>";
 			});
 		</script>
 	</body>
