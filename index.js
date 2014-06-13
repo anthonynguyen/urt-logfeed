@@ -23,12 +23,31 @@ function handler (req, res) {
 	});
 }
 
-/*
-setInterval(function() {
-	io.emit('chat-message', 'Hello!');
-}, 3000);
-*/
+clients = {};
+
+function parseLine(line) {
+	var eventRE = /^\s+\d+?:\d+? (.+?): ?(.*)$/;
+	console.log(line);
+	var match = eventRE.exec(line);
+	console.log(match);
+	if (!match) {
+		return null;
+	}
+	var eventType = match[1];
+	var eventData = match[2];
+	var event = {};
+	event.type = eventType;
+	event.data = eventData;
+	return event;
+}
 
 tail.on("line", function(line) {
-	io.emit("message", line);
+	var event = parseLine(line);
+	if (!!event) {
+		io.emit("event", event);
+		console.log("Event found: " + event.type + ", " + event.data);
+	} else {
+		console.log("Event not found on line:\n");
+		console.log(line);
+	}
 });
