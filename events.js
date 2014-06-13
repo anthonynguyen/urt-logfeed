@@ -19,8 +19,7 @@ eventParsers = {
 		return data;
 	},
 	ShutdownGameParser: function(rawdata) {
-		var data = {};
-		return rawdata;
+		return null;
 	},
 	ClientConnectParser: function(rawdata) {
 		var data = {};
