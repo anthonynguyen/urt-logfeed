@@ -22,12 +22,10 @@ eventParsers = {
 		return null;
 	},
 	ClientConnectParser: function(rawdata) {
-		var data = {};
-		return rawdata;
+		return parseInt(rawdata);
 	},
 	ClientDisconnectParser: function(rawdata) {
-		var data = {};
-		return rawdata;
+		return parseInt(rawdata);
 	},
 	ClientUserinfoParser: function(rawdata) {
 		var data = {};
@@ -38,12 +36,10 @@ eventParsers = {
 		return rawdata;
 	},
 	ClientSpawnParser: function(rawdata) {
-		var data = {};
-		return rawdata;
+		return parseInt(rawdata);
 	},
 	ClientBeginParser: function(rawdata) {
-		var data = {};
-		return rawdata;
+		return parseInt(rawdata);
 	},
 	sayparser: function(rawdata) {
 		var data = {};
