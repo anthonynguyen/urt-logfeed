@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Socket.io Test</title>
+	</head>
+	<body>
+		<ul id="Stuff">
+		</ul>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var socket = io();
+			socket.on('chat-message', function(msg){
+				$('#Stuff').append($('<li>').text(msg));
+			});
+		</script>
+	</body>
+</html>
