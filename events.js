@@ -2,7 +2,6 @@
 eventParsers = {
 	InitGameParser: function(rawdata) {
 		var data = {};
-		console.log(rawdata);
 		var parts = rawdata.split("\\");
 		parts.splice(0, 1); // The data section of an InitGame line starts with a \
 		for (var i = 0; i < parts.length / 2; i += 2) {
@@ -12,7 +11,12 @@ eventParsers = {
 	},
 	InitAuthParser: function(rawdata) {
 		var data = {};
-		return rawdata;
+		var parts = rawdata.split("\\");
+		parts.splice(0, 1); // Same reason as above
+		for (var i = 0; i < parts.length / 2; i += 2) {
+			data[parts[i]] = parts[i + 1];
+		}
+		return data;
 	},
 	ShutdownGameParser: function(rawdata) {
 		var data = {};
