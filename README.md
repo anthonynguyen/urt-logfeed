@@ -1,5 +1,5 @@
-UrT Logstream
-=============
+UrT Log Streamer
+================
 
 MIT-licensed, see `LICENSE`
 

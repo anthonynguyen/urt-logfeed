@@ -1,16 +1,16 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Socket.io Test</title>
+		<title>UrT Log Streamer</title>
 	</head>
 	<body>
-		<ul id="Stuff">
+		<ul id="log">
 		</ul>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io();
-			socket.on('chat-message', function(msg){
-				document.getElementById("Stuff").innerHTML += "<li>" + msg + "</li>";
+			socket.on('message', function(msg){
+				document.getElementById("log").innerHTML += "<li>" + msg + "</li>";
 			});
 		</script>
 	</body>
