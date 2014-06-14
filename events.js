@@ -16,27 +16,34 @@ eventParsers = {
 	InitGameParser: function(rawdata) {
 		var event = new Event("InitGame");
 		
-		var data = {};
 		var parts = rawdata.split("\\");
 		parts.splice(0, 1); // The data section of an InitGame line starts with a \
 		for (var i = 0; i < parts.length / 2; i += 2) {
-			data[parts[i]] = parts[i + 1];
+			event.data[parts[i]] = parts[i + 1];
 		}
 	
-		event.data = data;
+		return event;
+	},
+	InitRoundParser: function(rawdata) {
+		var event = new Event("InitRound");
+
+		var parts = rawdata.split("\\");
+		parts.splice(0, 1);
+		for (var i = 0; i < parts.length / 2; i += 2) {
+			event.data[parts[i]] = parts[i + 1];
+		}
+
 		return event;
 	},
 	InitAuthParser: function(rawdata) {
 		var event = new Event("InitAuth");		
 		
-		var data = {};
 		var parts = rawdata.split("\\");
 		parts.splice(0, 1); // Same reason as above
 		for (var i = 0; i < parts.length / 2; i += 2) {
-			data[parts[i]] = parts[i + 1];
+			event.data[parts[i]] = parts[i + 1];
 		}
 
-		event.data = data;
 		return event;
 	},
 	ShutdownGameParser: function(rawdata) {
@@ -56,7 +63,6 @@ eventParsers = {
 	ClientUserinfoParser: function(rawdata) {
 		var event = new Event("ClientUserinfo");
 	
-		var data = {};
 		parts = rawdata.split(" ");
 
 		event.subject.id = parseInt(parts[0]); // CID for player whose info changed
@@ -64,10 +70,9 @@ eventParsers = {
 		parts = parts[1].split("\\");
 		parts.splice(0, 1); // Starts with a \
 		for (var i = 0; i < parts.length; i += 2) {
-			data[parts[i]] = parts[i + 1];
+			event.data[parts[i]] = parts[i + 1];
 		}
 		
-		event.data = data;
 		return event;
 	},
 	ClientSpawnParser: function(rawdata) {
@@ -123,8 +128,7 @@ eventParsers = {
 	},
 	SurvivorWinnerParser: function(rawdata) {
 		var event = new Event("SurvivorWinner");
-		
-		var data = {};
+		event.data.team = rawdata;
 		return event;
 	}
 }

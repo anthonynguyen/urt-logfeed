@@ -22,7 +22,7 @@ function handler (req, res) {
 	});
 }
 
-var gameVars = {};
+var gameVars = null;
 var clients = {};
 
 function cidToName(cid) {
@@ -51,8 +51,12 @@ function parseLine(line) {
 	var rawEventData = match[2];
 	if (eventType + "Parser" in eventParsers) {
 		event = eventParsers[eventType + "Parser"](rawEventData);
-		if (event.type == "InitGame") {
-			gameVars = event.data;
+		if (event.type == "InitGame" || event.type == "InitRound") {
+			if (gameVars == null) {
+				gameVars = event.data;
+			} else {
+				mergeObj(gameVars, event.data);
+			}
 		} else if (event.type == "ClientConnect") {
 			clients[event.subject.id] = {};
 		} else if (event.type == "ClientUserinfo") {
