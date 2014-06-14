@@ -106,7 +106,14 @@ eventParsers = {
 		event.subjectName = textParts[0];
 		event.objectName = textParts[2];
 
-		event.data = {weapon: textParts[4]};
+		var weapParts = textParts[4].split("_");
+		if (weapParts[0] == "UT") {
+			weapParts.splice(0, 2);
+		} else {
+			weapParts.splice(0, 1);
+		}
+
+		event.data = {weapon: numParts[2], weapName: weapParts.join(" ")};
 		
 		return event;
 	},
