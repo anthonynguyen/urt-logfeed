@@ -88,18 +88,23 @@ eventParsers = {
 	sayParser: function(rawdata) {
 		var event = new Event("say");
 		
-		var parts = rawdata.split(" ");
-		event.subject.id = parseInt(parts[0]);
-		event.subject.name = parts[1].slice(0, -1);
+		var parts = rawdata.split(": ");
+		var subjectInfo = parts[0].split(" ");
+		event.subject.id = parseInt(subjectInfo[0]);
+		event.subject.name = subjectInfo[1];
 
-		parts.splice(0, 2);
-		event.data.message = parts.join(" ");
+		event.data.message = parts[1];
 		return event;
 	},
 	sayteamParser: function(rawdata) {
 		var event = new Event("sayteam");
 		
-		var data = {};
+		var parts = rawdata.split(": ");
+		var subjectInfo = parts[0].split(" ");
+		event.subject.id = parseInt(subjectInfo[0]);
+		event.subject.name = subjectInfo[1];
+
+		event.data.message = parts[1];
 		return event;
 	},
 	KillParser: function(rawdata) {
@@ -112,7 +117,11 @@ eventParsers = {
 		event.subject.id = parseInt(numParts[0]);
 		event.object.id = parseInt(numParts[1]);
 		
-		event.subject.name = textParts[0];
+		if (event.subject.id == event.object.id) {
+			event.subject.name = textParts[2];
+		} else {
+			event.subject.name = textParts[0];
+		}
 		event.object.name = textParts[2];
 
 		var weapParts = textParts[4].split("_");
@@ -122,7 +131,7 @@ eventParsers = {
 			weapParts.splice(0, 1);
 		}
 
-		event.data = {weapon: numParts[2], weapName: weapParts.join(" ")};
+		event.data = {weapon: {id: numParts[2], name: weapParts.join(" ")}};
 		
 		return event;
 	},

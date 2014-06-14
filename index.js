@@ -26,7 +26,7 @@ var gameVars = null;
 var clients = {};
 
 function cidToName(cid) {
-	if (clients[cid] != null && !(clients[cid] == undefined)) {
+	if (cid in clients) {
 		return clients[cid].name;
 	}
 	return null;
@@ -70,11 +70,11 @@ function parseLine(line) {
 		}
 		
 		if (event.subject.name != null) {
-			mergeObj(clients[event.subject], {name: event.subject.name});
+			mergeObj(clients[event.subject.id], {name: event.subject.name});
 		}
 
 		if (event.object.name != null) {
-			mergeObj(clients[event.object], {name: event.object.name});
+			mergeObj(clients[event.object.id], {name: event.object.name});
 		}
 
 		if (event.subject.id > -1 && event.subject.name == null) {
