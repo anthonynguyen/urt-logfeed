@@ -30,6 +30,12 @@ function cidToName(cid) {
 		return clients[cid].name;
 	}
 	return cid;
+}
+
+function mergeObj(obj1, obj2) { // Merges obj2's attributes onto obj1
+	for (var attr in obj2) {
+		obj1[attr] = obj2[attr];
+	}
 }	
 
 function parseLine(line) {
@@ -40,6 +46,7 @@ function parseLine(line) {
 	}
 	var eventType = match[1];
 	var rawEventData = match[2];
+	console.log(clients);
 	if (eventType + "Parser" in eventParsers) {
 		event = eventParsers[eventType + "Parser"](rawEventData);
 		if (event.type == "InitGame") {
@@ -47,10 +54,23 @@ function parseLine(line) {
 		} else if (event.type == "ClientConnect") {
 			clients[event.subject] = null;
 		} else if (event.type == "ClientUserinfo") {
-			clients[event.subject] = event.data;
+			if (clients[event.subject] != null) {
+				mergeObj(clients[event.subject], event.data);
+			} else {
+				clients[event.subject] = event.data;
+			}
 		} else if (event.type == "ClientDisconnect") {
 			delete clients[event.subject];
 		}
+		
+		if ("subjectName" in event.data) {
+			mergeObj(clients[event.subject], {name: event.subjectName});
+		}
+
+		if ("objectName" in event.data) {
+			mergeObj(clients[event.object], {name: event.objectName});
+		}
+
 		return event;
 	} else {
 		return null;

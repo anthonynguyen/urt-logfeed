@@ -74,10 +74,15 @@ eventParsers = {
 		event.subject = parseInt(rawdata);
 		return event;
 	},
-	sayparser: function(rawdata) {
+	sayParser: function(rawdata) {
 		var event = new Event("say");
 		
-		var data = {};
+		var parts = rawdata.split(" ");
+		event.subject = parseInt(parts[0]);
+		event.data.subjectName = parts[1].slice(0, -1);
+
+		parts.splice(0, 2);
+		event.data.message = parts.join(" ");
 		return event;
 	},
 	sayteamParser: function(rawdata) {
