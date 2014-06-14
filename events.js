@@ -89,9 +89,11 @@ eventParsers = {
 		for (var i = 0; i < parts.length; i+= 2) {
 			data[parts[i]] = parts[i + 1];
 		}
+
+		var teams = {"0": "Green", "1": "Red", "2": "Blue", "3": "Spectator"};
 		
 		event.subject.name = data.n;
-		event.data.team = data.t;
+		event.data.team = teams[data.t];
 
 		return event;
 	},
