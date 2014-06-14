@@ -9,6 +9,7 @@ config.exposeEvents = {
 	"ClientConnect": true,
 	"ClientDisconnect": true,
 	"ClientUserinfo": true,
+	"ClientTeamChange": true,
 	"ClientSpawn": true,
 	"ClientBegin": true,
 	"say": true,

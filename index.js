@@ -67,8 +67,11 @@ function parseLine(line) {
 			}
 		} else if (event.type == "ClientDisconnect") {
 			delete clients[event.subject];
+		} else if (event.type == "ClientTeamChange") {
+			var teamNames = {1: "Red", 2: "Blue", 3: "Spec"};
+			mergeObj(clients[event.subject.id], {team: teamNames[event.data.team]});
 		}
-		
+
 		if (event.subject.name != null) {
 			mergeObj(clients[event.subject.id], {name: event.subject.name});
 		}

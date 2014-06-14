@@ -72,7 +72,27 @@ eventParsers = {
 		for (var i = 0; i < parts.length; i += 2) {
 			event.data[parts[i]] = parts[i + 1];
 		}
+
+		event.subject.name = event.data.name;
 		
+		return event;
+	},
+	ClientUserinfoChangedParser: function(rawdata) {
+		var event = new Event("ClientTeamChange");
+
+		var data = {};
+	
+		parts = rawdata.split(" ");
+		event.subject.id = parseInt(parts[0]);
+
+		parts = parts[1].split("\\");
+		for (var i = 0; i < parts.length; i+= 2) {
+			data[parts[i]] = parts[i + 1];
+		}
+		
+		event.subject.name = data.n;
+		event.data.team = data.t;
+
 		return event;
 	},
 	ClientSpawnParser: function(rawdata) {
