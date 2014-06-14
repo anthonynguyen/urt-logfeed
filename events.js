@@ -18,7 +18,7 @@ eventParsers = {
 		
 		var parts = rawdata.split("\\");
 		parts.splice(0, 1); // The data section of an InitGame line starts with a \
-		for (var i = 0; i < parts.length / 2; i += 2) {
+		for (var i = 0; i < parts.length; i += 2) {
 			event.data[parts[i]] = parts[i + 1];
 		}
 	
@@ -29,7 +29,7 @@ eventParsers = {
 
 		var parts = rawdata.split("\\");
 		parts.splice(0, 1);
-		for (var i = 0; i < parts.length / 2; i += 2) {
+		for (var i = 0; i < parts.length; i += 2) {
 			event.data[parts[i]] = parts[i + 1];
 		}
 
@@ -40,7 +40,7 @@ eventParsers = {
 		
 		var parts = rawdata.split("\\");
 		parts.splice(0, 1); // Same reason as above
-		for (var i = 0; i < parts.length / 2; i += 2) {
+		for (var i = 0; i < parts.length; i += 2) {
 			event.data[parts[i]] = parts[i + 1];
 		}
 
