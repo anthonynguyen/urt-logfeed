@@ -2,15 +2,102 @@
 <html>
 	<head>
 		<title>UrT Log Streamer</title>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+		<style type="text/css">
+			* {
+				margin: 0;
+				outline: 0;
+				padding: 0;
+			}
+			
+			body {
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				background-color: #eee;
+				box-sizing: border-box;
+				font-family: 'Open Sans', sans-serif;
+				font-size: 11pt;
+				width: 100%;
+			}
+			
+			section#filter {
+				display: block;
+				float: left;
+				position: fixed;
+				width: 200px;
+			}
+			
+			section#logcontainer {
+				display: block;
+				font-size: 0.8em;
+				margin-left: 200px;
+			}
+			
+			#log {
+				list-style-type: none;
+			}
+			
+			#log li {
+				background: #fff;
+				border: 1px solid #d2d2d2;
+				padding: 10px;
+				margin: 6px 0;
+			}
+				
+			.ev-label {
+				color: #fff;
+				font-size: 0.9em;
+				margin-right: 10px;
+				padding: 2px 4px;
+				position: absolute;
+				text-transform: uppercase;
+			}
+			
+			.ev-data {
+				margin-left: 130px;
+			}
+		
+			.ev-kill {
+				background: #E73F3F;
+			}
+			
+			.ev-flag {
+				background: #F76C27;
+			}
+			
+			.ev-client {
+				background: #6D9DD1;
+			}
+			
+			.ev-game {
+				background: #7E45D3;
+			}
+			
+			.ev-chat {
+				background: #5EB89B;
+			}	
+		</style>
 	</head>
 	<body>
-		<ul id="log">
-		</ul>
+		<section id="filter">
+			&nbsp;
+		</section>
+		<section id="logcontainer">
+			<ul id="log">
+			</ul>
+		</section>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
+			var eventToLi = function(event) {
+				var parts = window[event.type = "Formatter"](event);
+				var liText = '<li><span class="ev-label ' + parts.label + '">' + parts.type + '</span></span class="ev-data">' + parts.data + '</span></li>';
+				return liText;
+			}
 			var socket = io();
 			socket.on('event', function(event){
-				document.getElementById("log").innerHTML += "<li>" + JSON.stringify(event) + "</li>";
+				var logList = document.getElementById("log");
+				logList.innerHTML += eventToLi(event);
+				window.scrollTo(0, document.body.scrollHeight);
 			});
 		</script>
 	</body>
