@@ -25,6 +25,13 @@ function handler (req, res) {
 var gameVars = {};
 var clients = {};
 
+function cidToName(cid) {
+	if (clients[cid] != null) {
+		return clients[cid].name;
+	}
+	return cid;
+}	
+
 function parseLine(line) {
 	var eventRE = /^\s+\d+?:\d+? (.+?): ?(.*)$/;
 	var match = eventRE.exec(line);
@@ -33,12 +40,16 @@ function parseLine(line) {
 	}
 	var eventType = match[1];
 	var rawEventData = match[2];
-	var event = {};
-	event.type = eventType;
-	if (event.type + "Parser" in eventParsers) {
-		event.data = eventParsers[event.type + "Parser"](rawEventData);
+	if (eventType + "Parser" in eventParsers) {
+		event = eventParsers[eventType + "Parser"](rawEventData);
 		if (event.type == "InitGame") {
 			gameVars = event.data;
+		} else if (event.type == "ClientConnect") {
+			clients[event.subject] = null;
+		} else if (event.type == "ClientUserinfo") {
+			clients[event.subject] = event.data;
+		} else if (event.type == "ClientDisconnect") {
+			delete clients[event.subject];
 		}
 		return event;
 	} else {
@@ -50,6 +61,6 @@ tail.on("line", function(line) {
 	var event = parseLine(line);
 	if (!!event) {
 		io.emit("event", event);
-		console.log("Event found: " + event.type + ", " + event.data);
+		console.log("Event found: " + event.type);
 	}
 });

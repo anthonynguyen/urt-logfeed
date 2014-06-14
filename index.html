@@ -9,8 +9,8 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io();
-			socket.on('event', function(msg){
-				document.getElementById("log").innerHTML += "<li>" +msg.type+": "+ JSON.stringify(msg.data) + "</li>";
+			socket.on('event', function(event){
+				document.getElementById("log").innerHTML += "<li>" + event.type + ": "+ JSON.stringify(event.data) + "</li>";
 			});
 		</script>
 	</body>
