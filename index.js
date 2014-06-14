@@ -51,11 +51,14 @@ function parseLine(line) {
 	var rawEventData = match[2];
 	if (eventType + "Parser" in eventParsers) {
 		event = eventParsers[eventType + "Parser"](rawEventData);
-		if (event.type == "InitGame" || event.type == "InitRound") {
+		if (event.type == "MapChange" || event.type == "InitRound") {
 			if (gameVars == null) {
 				gameVars = event.data;
 			} else {
 				mergeObj(gameVars, event.data);
+			}
+			if (event.type == "MapChange") {
+				event.data = {map: event.data.mapname};
 			}
 		} else if (event.type == "ClientConnect") {
 			clients[event.subject.id] = {};

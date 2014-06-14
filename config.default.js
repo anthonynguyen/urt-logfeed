@@ -2,7 +2,7 @@ config = {};
 config.logPath = "";
 
 config.exposeEvents = {
-	"InitGame": true,
+	"MapChange": true,
 	"InitRound": true,
 	"InitAuth": true,
 	"ShutdownGame": true,

@@ -14,7 +14,7 @@ function Event(type) {
 
 eventParsers = {
 	InitGameParser: function(rawdata) {
-		var event = new Event("InitGame");
+		var event = new Event("MapChange");
 		
 		var parts = rawdata.split("\\");
 		parts.splice(0, 1); // The data section of an InitGame line starts with a \

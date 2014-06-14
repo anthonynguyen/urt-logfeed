@@ -11,7 +11,6 @@
 			var socket = io();
 			socket.on('event', function(event){
 				document.getElementById("log").innerHTML += "<li>" + JSON.stringify(event) + "</li>";
-				console.log(event.subject.name);
 			});
 		</script>
 	</body>
