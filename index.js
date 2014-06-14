@@ -94,7 +94,9 @@ function parseLine(line) {
 tail.on("line", function(line) {
 	var event = parseLine(line);
 	if (!!event) {
-		io.emit("event", event);
-		console.log("Event found: " + event.type);
+		if (config.exposeEvents[event.type]) {
+			io.emit("event", event);
+			console.log("Event sent: " + event.type);
+		}
 	}
 });
