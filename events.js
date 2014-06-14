@@ -2,6 +2,8 @@ function Event(type) {
 	this.type = type;
 	this.subject = -1;
 	this.object = -1;
+	this.subjectName = null;
+	this.objectName = null;
 	this.data = {};
 }
 
@@ -79,7 +81,7 @@ eventParsers = {
 		
 		var parts = rawdata.split(" ");
 		event.subject = parseInt(parts[0]);
-		event.data.subjectName = parts[1].slice(0, -1);
+		event.subjectName = parts[1].slice(0, -1);
 
 		parts.splice(0, 2);
 		event.data.message = parts.join(" ");
@@ -94,7 +96,18 @@ eventParsers = {
 	KillParser: function(rawdata) {
 		var event = new Event("Kill");
 		
-		var data = {};
+		var parts = rawdata.split(": ");
+		var numParts = parts[0].split(" ");
+		var textParts = parts[1].split(" ");
+		
+		event.subject = parseInt(numParts[0]);
+		event.object = parseInt(numParts[1]);
+		
+		event.subjectName = textParts[0];
+		event.objectName = textParts[2];
+
+		event.data = {weapon: textParts[4]};
+		
 		return event;
 	},
 	SurvivorWinnerParser: function(rawdata) {
