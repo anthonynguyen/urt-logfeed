@@ -1,9 +1,13 @@
 function Event(type) {
 	this.type = type;
-	this.subject = -1;
-	this.object = -1;
-	this.subjectName = null;
-	this.objectName = null;
+	this.subject = {
+		id: -1,
+		name: null
+	};
+	this.object = {
+		id: -1,
+		name: null
+	};
 	this.data = {};
 }
 
@@ -41,12 +45,12 @@ eventParsers = {
 	},
 	ClientConnectParser: function(rawdata) {
 		var event = new Event("ClientConnect");
-		event.subject = parseInt(rawdata);
+		event.subject.id = parseInt(rawdata);
 		return event;
 	},
 	ClientDisconnectParser: function(rawdata) {
 		var event = new Event("ClientDisconnect");
-		event.subject = parseInt(rawdata);
+		event.subject.id = parseInt(rawdata);
 		return event;
 	},
 	ClientUserinfoParser: function(rawdata) {
@@ -55,7 +59,7 @@ eventParsers = {
 		var data = {};
 		parts = rawdata.split(" ");
 
-		event.subject = parseInt(parts[0]); // CID for player whose info changed
+		event.subject.id = parseInt(parts[0]); // CID for player whose info changed
 
 		parts = parts[1].split("\\");
 		parts.splice(0, 1); // Starts with a \
@@ -68,20 +72,20 @@ eventParsers = {
 	},
 	ClientSpawnParser: function(rawdata) {
 		var event = new Event("ClientSpawn");
-		event.subject = parseInt(rawdata);
+		event.subject.id = parseInt(rawdata);
 		return event;
 	},
 	ClientBeginParser: function(rawdata) {
 		var event = new Event("ClientBegin");
-		event.subject = parseInt(rawdata);
+		event.subject.id = parseInt(rawdata);
 		return event;
 	},
 	sayParser: function(rawdata) {
 		var event = new Event("say");
 		
 		var parts = rawdata.split(" ");
-		event.subject = parseInt(parts[0]);
-		event.subjectName = parts[1].slice(0, -1);
+		event.subject.id = parseInt(parts[0]);
+		event.subject.name = parts[1].slice(0, -1);
 
 		parts.splice(0, 2);
 		event.data.message = parts.join(" ");
@@ -100,11 +104,11 @@ eventParsers = {
 		var numParts = parts[0].split(" ");
 		var textParts = parts[1].split(" ");
 		
-		event.subject = parseInt(numParts[0]);
-		event.object = parseInt(numParts[1]);
+		event.subject.id = parseInt(numParts[0]);
+		event.object.id = parseInt(numParts[1]);
 		
-		event.subjectName = textParts[0];
-		event.objectName = textParts[2];
+		event.subject.name = textParts[0];
+		event.object.name = textParts[2];
 
 		var weapParts = textParts[4].split("_");
 		if (weapParts[0] == "UT") {

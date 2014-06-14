@@ -29,7 +29,7 @@ function cidToName(cid) {
 	if (clients[cid] != null && !(clients[cid] == undefined)) {
 		return clients[cid].name;
 	}
-	return cid;
+	return null;
 }
 
 function mergeObj(obj1, obj2) { // Merges obj2's attributes onto obj1
@@ -54,23 +54,31 @@ function parseLine(line) {
 		if (event.type == "InitGame") {
 			gameVars = event.data;
 		} else if (event.type == "ClientConnect") {
-			clients[event.subject] = {};
+			clients[event.subject.id] = {};
 		} else if (event.type == "ClientUserinfo") {
-			if (clients[event.subject] == undefined) {
-				clients[event.subject] = event.data;
+			if (clients[event.subject.id] == undefined) {
+				clients[event.subject.id] = event.data;
 			} else {
-				mergeObj(clients[event.subject], event.data);
+				mergeObj(clients[event.subject.id], event.data);
 			}
 		} else if (event.type == "ClientDisconnect") {
 			delete clients[event.subject];
 		}
 		
-		if (event.subjectName != null) {
-			mergeObj(clients[event.subject], {name: event.subjectName});
+		if (event.subject.name != null) {
+			mergeObj(clients[event.subject], {name: event.subject.name});
 		}
 
-		if (event.objectName != null) {
-			mergeObj(clients[event.object], {name: event.objectName});
+		if (event.object.name != null) {
+			mergeObj(clients[event.object], {name: event.object.name});
+		}
+
+		if (event.subject.id > -1 && event.subject.name == null) {
+			event.subject.name = cidToName(event.subject.id);
+		}
+
+		if (event.object.id > -1 && event.object.name == null) {
+			event.object.name = cidToName(event.object.id);
 		}
 
 		return event;
