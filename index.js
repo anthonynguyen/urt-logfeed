@@ -29,7 +29,7 @@ function cidToName(cid) {
 	if (cid in clients) {
 		return clients[cid].name;
 	}
-	return null;
+	return false;
 }
 
 function mergeObj(obj1, obj2) { // Merges obj2's attributes onto obj1
@@ -40,6 +40,13 @@ function mergeObj(obj1, obj2) { // Merges obj2's attributes onto obj1
 		obj1[attr] = obj2[attr];
 	}
 }	
+
+function ensureClientInit(cid) {
+	if (clients[cid] == undefined) {
+		clients[cid] = {};
+	}
+	return;
+}
 
 function parseLine(line) {
 	var eventRE = /^\s+\d+?:\d+? (.+?): ?(.*)$/;
@@ -56,6 +63,14 @@ function parseLine(line) {
 			return null;
 		}
 
+		if (event.subject.id > -1) {
+			ensureClientInit(event.subject.id);
+		}
+
+		if (event.object.id > -1) {
+			ensureClientInit(event.object.id);
+		}
+
 		if (event.type == "MapChange" || event.type == "InitRound") {
 			if (gameVars == null) {
 				gameVars = event.data;
@@ -65,27 +80,28 @@ function parseLine(line) {
 			if (event.type == "MapChange") {
 				event.data = {map: event.data.mapname};
 			}
-		} else if (event.type == "ClientConnect") {
-			clients[event.subject.id] = {};
 		} else if (event.type == "ClientUserinfo") {
-			if (clients[event.subject.id] == undefined) {
-				clients[event.subject.id] = event.data;
-			} else {
-				mergeObj(clients[event.subject.id], event.data);
-			}
+			mergeObj(clients[event.subject.id], event.data);
 		} else if (event.type == "ClientDisconnect") {
 			delete clients[event.subject];
 		} else if (event.type == "ClientTeamChange") {
 			var teamNames = {1: "Red", 2: "Blue", 3: "Spec"};
 			mergeObj(clients[event.subject.id], {team: teamNames[event.data.team]});
 		} else if (event.type == "Kill" && event.data.type == 0) {
-			if (event.subject.id in clients &&
-				event.object.id in clients &&
-				"team" in clients[event.subject.id] &&
+			if ("team" in clients[event.subject.id] &&
 				"team" in clients[event.object.id]) {
 				if (clients[event.subject.id].team == clients[event.object.id].team) {
 					event.data.type = 1;
 				}
+			}
+		} else if (event.type == "FlagDrop" || event.type == "FlagPickup" || event.type == "FlagCapture") {
+			var opposite = {"Red": "Blue", "Blue": "Red"};
+			if (clients[event.subject.id].team == undefined) {
+				clients[event.subject.id].team = opposite[event.data.flag];
+			}
+		} else if (event.type == "FlagReturn") {
+			 if (clients[event.subject.id].team == undefined) {
+				 clients[event.subject.id].team = event.data.flag;
 			}
 		}
 
@@ -96,13 +112,21 @@ function parseLine(line) {
 		if (event.object.name != null) {
 			mergeObj(clients[event.object.id], {name: event.object.name});
 		}
+	
+		var name;
 
-		if (event.subject.id > -1 && event.subject.name == null) {
-			event.subject.name = cidToName(event.subject.id);
+		if (event.subject.name == null) {
+			name = cidToName(event.subject.id);
+			if (name) {
+				event.subject.name = name;
+			}
 		}
 
-		if (event.object.id > -1 && event.object.name == null) {
-			event.object.name = cidToName(event.object.id);
+		if (event.object.name == null) {
+			name = cidToName(event.object.id);
+			if (name) {
+				event.object.name = name;
+			}
 		}
 		
 		return event;
