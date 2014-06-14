@@ -124,13 +124,6 @@
 			parts.data = "Game stopped.";
 			return parts;
 		}
-		var ClientConnectFormatter = function(event) {
-			var parts = {};
-			parts.type = "Connect";
-			parts.label = "ev-client";
-			parts.data = getName(event.subject) + " connected.";
-			return parts;
-		}
 		var ClientDisconnectFormatter = function(event) {
 			var parts = {};
 			parts.type = "Disconnect";
@@ -161,9 +154,9 @@
 		}
 		var ClientBeginFormatter = function(event) {
 			var parts = {};
-			parts.type = "Begin";
-			parts.label = "ev-game";
-			parts.data = getName(event.subject) + " began.";
+			parts.type = "Connect";
+			parts.label = "ev-client";
+			parts.data = getName(event.subject) + " connected.";
 			return parts;
 		}
 		var sayFormatter = function(event) {

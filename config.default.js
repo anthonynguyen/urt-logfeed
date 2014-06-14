@@ -6,7 +6,6 @@ config.exposeEvents = {
 	"InitRound": true,
 	"InitAuth": true,
 	"ShutdownGame": true,
-	"ClientConnect": true,
 	"ClientDisconnect": true,
 	"ClientUserinfo": true,
 	"ClientTeamChange": true,

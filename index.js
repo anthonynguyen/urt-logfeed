@@ -43,7 +43,7 @@ function mergeObj(obj1, obj2) { // Merges obj2's attributes onto obj1
 
 function ensureClientInit(cid) {
 	if (clients[cid] == undefined) {
-		clients[cid] = {};
+		clients[cid] = {began: false};
 	}
 	return;
 }
@@ -80,6 +80,11 @@ function parseLine(line) {
 			if (event.type == "MapChange") {
 				event.data = {map: event.data.mapname};
 			}
+		} else if (event.type == "ClientBegin") {
+			if (clients[event.subject.id].began) {
+				return null;
+			}
+			clients[event.subject.id].began = true;	
 		} else if (event.type == "ClientUserinfo") {
 			mergeObj(clients[event.subject.id], event.data);
 		} else if (event.type == "ClientDisconnect") {
@@ -102,6 +107,12 @@ function parseLine(line) {
 		} else if (event.type == "FlagReturn") {
 			 if (clients[event.subject.id].team == undefined) {
 				 clients[event.subject.id].team = event.data.flag;
+			}
+		}
+
+		if (event.type == "ClientUserinfo" || event.type == "ClientTeamChange") {
+			if (!clients[event.subject.id].began) {
+				return null;
 			}
 		}
 
@@ -128,7 +139,7 @@ function parseLine(line) {
 				event.object.name = name;
 			}
 		}
-		
+
 		return event;
 	} else {
 		return null;
