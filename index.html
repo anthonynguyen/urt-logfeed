@@ -222,7 +222,7 @@
 			parts.data = getName(event.subject) + " captured the " + event.data.flag + " flag.";
 			return parts;
 		}
-		var MapEndFormatter = function*(event) {
+		var MapEndFormatter = function(event) {
 			var parts = {};
 			parts.type = event.type;
 			parts.label = "ev-game";
