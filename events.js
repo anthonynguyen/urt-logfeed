@@ -63,7 +63,7 @@ eventParsers = {
 	ClientUserinfoParser: function(rawdata) {
 		var event = new Event("ClientUserinfo");
 	
-		parts = rawdata.split(" ");
+		var parts = rawdata.split(" ");
 
 		event.subject.id = parseInt(parts[0]); // CID for player whose info changed
 
@@ -82,7 +82,7 @@ eventParsers = {
 
 		var data = {};
 	
-		parts = rawdata.split(" ");
+		var parts = rawdata.split(" ");
 		event.subject.id = parseInt(parts[0]);
 
 		parts = parts[1].split("\\");
@@ -162,7 +162,7 @@ eventParsers = {
 		return event;
 	},
 	ItemParser: function(rawdata) {
-		parts = rawdata.split(" ");
+		var parts = rawdata.split(" ");
 		if (parts[1] == "team_CTF_blueflag" || parts[1] == "team_CTF_redflag") {
 			var event = new Event("FlagPickup");
 			event.subject.id = parseInt(parts[0]);
@@ -178,7 +178,7 @@ eventParsers = {
 		return event;
 	},
 	FlagParser: function(rawdata) {
-		parts = rawdata.split(" ");
+		var parts = rawdata.split(" ");
 		// 0: drop, 1: return, 2: capture
 		if (parts[1] == "0:") {
 			var event = new Event("FlagDrop");
@@ -200,5 +200,11 @@ eventParsers = {
 		}
 	
 		return event;
+	},
+	ExitParser: function(rawdata) {
+		var event = new Event("MapEnd");
+		event.data.reason = rawdata;
+		return event;
 	}
 }
+
