@@ -51,6 +51,11 @@ function parseLine(line) {
 	var rawEventData = match[2];
 	if (eventType + "Parser" in eventParsers) {
 		event = eventParsers[eventType + "Parser"](rawEventData);
+
+		if (event == null) {
+			return null;
+		}
+
 		if (event.type == "MapChange" || event.type == "InitRound") {
 			if (gameVars == null) {
 				gameVars = event.data;

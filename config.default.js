@@ -15,6 +15,10 @@ config.exposeEvents = {
 	"say": true,
 	"sayteam": true,
 	"Kill": true,
-	"SurvivorWinner": true
+	"SurvivorWinner": true,
+	"FlagPickup": true,
+	"FlagDrop": true,
+	"FlagReturn": true,
+	"FlagCapture": true
 }
 	

@@ -160,5 +160,45 @@ eventParsers = {
 		var event = new Event("SurvivorWinner");
 		event.data.team = rawdata;
 		return event;
+	},
+	ItemParser: function(rawdata) {
+		parts = rawdata.split(" ");
+		if (parts[1] == "team_CTF_blueflag" || parts[1] == "team_CTF_redflag") {
+			var event = new Event("FlagPickup");
+			event.subject.id = parseInt(parts[0]);
+			if (parts[1] == "team_CTF_blueflag") {
+				event.data = {flag: "Blue"};
+			} else {
+				event.data = {flag: "Red"};
+			}
+		} else {
+			var event = null;
+		}
+
+		return event;
+	},
+	FlagParser: function(rawdata) {
+		parts = rawdata.split(" ");
+		// 0: drop, 1: return, 2: capture
+		if (parts[1] == "0:") {
+			var event = new Event("FlagDrop");
+		} else if (parts[1] == "1:") {
+			var event = new Event("FlagReturn");
+		} else {
+			var event = new Event("FlagCapture");
+		}
+		event.subject.id = parseInt(parts[0]);
+
+		if (parts[2] == "team_CTF_blueflag") {
+			event.data.flag = "Blue";
+		} else {
+			event.data.flag = "Red";
+		}
+		var opposite = {"Red": "Blue", "Blue": "Red"};
+		if (event.type == "FlagCapture") {
+			event.data.flag = opposite[event.data.flag];
+		}
+	
+		return event;
 	}
 }
