@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>UrT Log Streamer</title>
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
 		<style type="text/css">
 			* {
 				margin: 0;
@@ -90,9 +90,9 @@
 		<script>
 		var getName = function(person) {
 			if (person.name != null) {
-				return person.name;
+				return "[" + person.id.toString() + "]" + person.name;
 			} else {
-				return "Client " + person.id.toString();
+				return "Client [" + person.id.toString() + "]";
 			}
 		}
 
