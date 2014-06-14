@@ -70,6 +70,15 @@ function parseLine(line) {
 		} else if (event.type == "ClientTeamChange") {
 			var teamNames = {1: "Red", 2: "Blue", 3: "Spec"};
 			mergeObj(clients[event.subject.id], {team: teamNames[event.data.team]});
+		} else if (event.type == "Kill" && event.data.type == 0) {
+			if (event.subject.id in clients &&
+				event.object.id in clients &&
+				"team" in clients[event.subject.id] &&
+				"team" in clients[event.object.id]) {
+				if (clients[event.subject.id].team == clients[event.object.id].team) {
+					event.data.type = 1;
+				}
+			}
 		}
 
 		if (event.subject.name != null) {
@@ -87,7 +96,7 @@ function parseLine(line) {
 		if (event.object.id > -1 && event.object.name == null) {
 			event.object.name = cidToName(event.object.id);
 		}
-
+		
 		return event;
 	} else {
 		return null;

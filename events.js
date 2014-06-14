@@ -139,8 +139,10 @@ eventParsers = {
 		
 		if (event.subject.id == event.object.id) {
 			event.subject.name = textParts[2];
+			event.data.type = 2;
 		} else {
 			event.subject.name = textParts[0];
+			event.data.type = 0;
 		}
 		event.object.name = textParts[2];
 
@@ -151,8 +153,7 @@ eventParsers = {
 			weapParts.splice(0, 1);
 		}
 
-		event.data = {weapon: {id: numParts[2], name: weapParts.join(" ")}};
-		
+		event.data.weapon = {id: numParts[2], name: weapParts.join(" ")};
 		return event;
 	},
 	SurvivorWinnerParser: function(rawdata) {
