@@ -6,11 +6,11 @@ config.exposeEvents = {
 	InitRound: true,
 	InitAuth: true,
 	ShutdownGame: true,
+	ClientConnect: true,
 	ClientDisconnect: true,
 	ClientRename: true,
 	ClientTeamChange: true,
 	ClientSpawn: true,
-	ClientBegin: true,
 	say: true,
 	sayteam: true,
 	Kill: true,
@@ -18,6 +18,7 @@ config.exposeEvents = {
 	FlagPickup: true,
 	FlagDrop: true,
 	FlagReturn: true,
-	FlagCapture: true
+	FlagCapture: true,
+	MapEnd: true
 }
 	

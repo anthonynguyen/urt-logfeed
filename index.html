@@ -160,7 +160,7 @@
 			parts.data = getName(event.subject) + " spawned.";
 			return parts;
 		}
-		var ClientBeginFormatter = function(event) {
+		var ClientConnectFormatter = function(event) {
 			var parts = {};
 			parts.type = "Connect";
 			parts.label = "ev-client";

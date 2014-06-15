@@ -50,6 +50,11 @@ eventParsers = {
 		var event = new Event("ShutdownGame");	
 		return event;
 	},
+	ClientConnectParser: function(rawdata) {
+		var event = new Event("ClientConnect");
+		event.subject.id = parseInt(rawdata);
+		return event;
+	},
 	ClientDisconnectParser: function(rawdata) {
 		var event = new Event("ClientDisconnect");
 		event.subject.id = parseInt(rawdata);
@@ -94,11 +99,6 @@ eventParsers = {
 	},
 	ClientSpawnParser: function(rawdata) {
 		var event = new Event("ClientSpawn");
-		event.subject.id = parseInt(rawdata);
-		return event;
-	},
-	ClientBeginParser: function(rawdata) {
-		var event = new Event("ClientBegin");
 		event.subject.id = parseInt(rawdata);
 		return event;
 	},

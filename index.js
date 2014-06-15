@@ -24,6 +24,7 @@ function handler (req, res) {
 
 var gameVars = null;
 var clients = {};
+var pendingEvents = [];
 
 function cidToName(cid) {
 	if (cid in clients && "name" in clients[cid]) {
@@ -43,7 +44,7 @@ function mergeObj(obj1, obj2) { // Merges obj2's attributes onto obj1
 
 function ensureClientInit(cid) {
 	if (clients[cid] == undefined) {
-		clients[cid] = {began: false};
+		clients[cid] = {};
 	}
 	return;
 }
@@ -80,11 +81,9 @@ function parseLine(line) {
 			if (event.type == "MapChange") {
 				event.data = {map: event.data.mapname};
 			}
-		} else if (event.type == "ClientBegin") {
-			if (clients[event.subject.id].began) {
-				return null;
-			}
-			clients[event.subject.id].began = true;	
+		} else if (event.type == "ClientConnect") {
+			pendingEvents.push(event);
+			return null;
 		} else if (event.type == "ClientRename") {
 			var origName = cidToName(event.subject.id);
 			if (event.subject.name != origName) {
@@ -99,8 +98,20 @@ function parseLine(line) {
 				mergeObj(clients[event.subject.id], event.data);
 				return null;
 			}
+			var last = pendingEvents.pop();
+			if (last != undefined) {
+				if (last.type == "ClientConnect") {
+					last.subject.name = event.data.name;
+					event = last;
+				} else {
+					pendingEvents.push(last);
+				}
+			}
 		} else if (event.type == "ClientTeamChange") {
 			var teamNames = {1: "Red", 2: "Blue", 3: "Spec"};
+			if ("team" in clients[event.subject.id] && clients[event.subject.id].team == teamNames[event.data.team]) {
+				return null;
+			}
 			mergeObj(clients[event.subject.id], {team: teamNames[event.data.team]});
 		} else if (event.type == "Kill" && event.data.type == 0) {
 			if ("team" in clients[event.subject.id] &&
@@ -119,13 +130,13 @@ function parseLine(line) {
 				 clients[event.subject.id].team = event.data.flag;
 			}
 		}
-
+/*
 		if (event.type == "ClientTeamChange") {
 			if (!clients[event.subject.id].began) {
 				return null;
 			}
 		}
-
+*/
 		if (event.subject.name != null) {
 			mergeObj(clients[event.subject.id], {name: event.subject.name});
 		}
