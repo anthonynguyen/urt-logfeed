@@ -99,8 +99,6 @@ function parseLine(line) {
 				mergeObj(clients[event.subject.id], event.data);
 				return null;
 			}
-		} else if (event.type == "ClientDisconnect") {
-			delete clients[event.subject.id];
 		} else if (event.type == "ClientTeamChange") {
 			var teamNames = {1: "Red", 2: "Blue", 3: "Spec"};
 			mergeObj(clients[event.subject.id], {team: teamNames[event.data.team]});
@@ -150,6 +148,10 @@ function parseLine(line) {
 			if (name) {
 				event.object.name = name;
 			}
+		}
+
+		if (event.type == "ClientDisconnect") {
+			delete clients[event.subject.id];
 		}
 
 		return event;
