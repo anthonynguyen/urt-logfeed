@@ -238,9 +238,9 @@
 
 		var socket = io();
 		var eventFilter = {};
+		var logList = document.getElementById("log");
 
 		socket.on('event', function(event){
-			var logList = document.getElementById("log");
 			var parts = window[event.type + "Formatter"](event);
 			var liText = '<li><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span></li>';
 			logList.innerHTML += liText;

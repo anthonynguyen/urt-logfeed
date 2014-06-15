@@ -108,13 +108,16 @@ function parseLine(line) {
 				}
 			}
 		} else if (event.type == "ClientTeamChange") {
-			var teamNames = {1: "Red", 2: "Blue", 3: "Spec"};
-			if ("team" in clients[event.subject.id] && clients[event.subject.id].team == teamNames[event.data.team]) {
+			if ("team" in clients[event.subject.id] && clients[event.subject.id].team == event.data.team) {
 				return null;
 			}
-			mergeObj(clients[event.subject.id], {team: teamNames[event.data.team]});
-		} else if (event.type == "Kill" && event.data.type == 0) {
-			if ("team" in clients[event.subject.id] &&
+			mergeObj(clients[event.subject.id], {team: event.data.team});
+		} else if (event.type == "Kill") {
+			if (event.data.weapon.name == "CHANGE TEAM") {
+				return null;
+			}
+			if (event.data.type == 0 &&
+				"team" in clients[event.subject.id] &&
 				"team" in clients[event.object.id]) {
 				if (clients[event.subject.id].team == clients[event.object.id].team) {
 					event.data.type = 1;
