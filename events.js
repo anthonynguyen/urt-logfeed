@@ -56,7 +56,7 @@ eventParsers = {
 		return event;
 	},
 	ClientUserinfoParser: function(rawdata) {
-		var event = new Event("ClientUserinfo");
+		var event = new Event("ClientRename");
 	
 		var parts = rawdata.split(" ");
 

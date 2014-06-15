@@ -131,11 +131,11 @@
 			parts.data = getName(event.subject) + " disconnected.";
 			return parts;
 		}
-		var ClientUserinfoFormatter = function(event) {
+		var ClientRenameFormatter = function(event) {
 			var parts = {};
-			parts.type = "Userinfo";
+			parts.type = "Rename";
 			parts.label = "ev-client";
-			parts.data = getName(event.subject) + " changed their userinfo.";
+			parts.data = getName(event.subject) + " renamed to " + event.data.name;
 			return parts;
 		}
 		var ClientTeamChangeFormatter = function(event) {

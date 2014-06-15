@@ -26,7 +26,7 @@ var gameVars = null;
 var clients = {};
 
 function cidToName(cid) {
-	if (cid in clients) {
+	if (cid in clients && "name" in clients[cid]) {
 		return clients[cid].name;
 	}
 	return false;
@@ -85,8 +85,23 @@ function parseLine(line) {
 				return null;
 			}
 			clients[event.subject.id].began = true;	
-		} else if (event.type == "ClientUserinfo") {
-			mergeObj(clients[event.subject.id], event.data);
+		} else if (event.type == "ClientRename") {
+			var origName = cidToName(event.subject.id);
+			console.log(origName);
+			if (event.subject.name != origName) {
+				mergeObj(clients[event.subject.id], event.data);
+				event.data = {name: event.subject.name};
+				if (origName) {
+					event.subject.name = origName;
+				} else {
+					event.subject.name = null;
+				}
+				console.log(event.subject.name);
+				console.log(event.data.name);
+			} else {
+				mergeObj(clients[event.subject.id], event.data);
+				return null;
+			}
 		} else if (event.type == "ClientDisconnect") {
 			delete clients[event.subject];
 		} else if (event.type == "ClientTeamChange") {
@@ -110,7 +125,7 @@ function parseLine(line) {
 			}
 		}
 
-		if (event.type == "ClientUserinfo" || event.type == "ClientTeamChange") {
+		if (event.type == "ClientTeamChange") {
 			if (!clients[event.subject.id].began) {
 				return null;
 			}
@@ -126,7 +141,7 @@ function parseLine(line) {
 	
 		var name;
 
-		if (event.subject.name == null) {
+		if (event.subject.name == null && event.type != "ClientRename") {
 			name = cidToName(event.subject.id);
 			if (name) {
 				event.subject.name = name;
