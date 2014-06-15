@@ -100,7 +100,7 @@ function parseLine(line) {
 				return null;
 			}
 		} else if (event.type == "ClientDisconnect") {
-			delete clients[event.subject];
+			delete clients[event.subject.id];
 		} else if (event.type == "ClientTeamChange") {
 			var teamNames = {1: "Red", 2: "Blue", 3: "Spec"};
 			mergeObj(clients[event.subject.id], {team: teamNames[event.data.team]});
