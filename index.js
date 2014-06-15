@@ -87,7 +87,6 @@ function parseLine(line) {
 			clients[event.subject.id].began = true;	
 		} else if (event.type == "ClientRename") {
 			var origName = cidToName(event.subject.id);
-			console.log(origName);
 			if (event.subject.name != origName) {
 				mergeObj(clients[event.subject.id], event.data);
 				event.data = {name: event.subject.name};
@@ -96,8 +95,6 @@ function parseLine(line) {
 				} else {
 					event.subject.name = null;
 				}
-				console.log(event.subject.name);
-				console.log(event.data.name);
 			} else {
 				mergeObj(clients[event.subject.id], event.data);
 				return null;
@@ -169,4 +166,14 @@ tail.on("line", function(line) {
 			console.log("Event sent: " + event.type);
 		}
 	}
+});
+
+io.on('connection', function(socket) {
+	var availableEvents = [];
+	for (var e in config.exposeEvents) {
+		if (config.exposeEvents[e]) {
+			availableEvents.push(e);
+		}
+	}
+	socket.emit("exposedEvents", availableEvents);
 });

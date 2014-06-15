@@ -237,12 +237,23 @@
 		}
 
 		var socket = io();
+		var eventFilter = {};
+
 		socket.on('event', function(event){
 			var logList = document.getElementById("log");
 			var parts = window[event.type + "Formatter"](event);
 			var liText = '<li><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span></li>';
 			logList.innerHTML += liText;
 			window.scrollTo(0, document.body.scrollHeight);
+		});
+		socket.on("exposedEvents", function(list) {
+			for (var i = 0; i < list.length; i++) {
+				eventFilter[list[i]] = true;
+			}
+			var defaultHide = ["InitAuth", "ClientSpawn"];
+			for (var i = 0; i < defaultHide.length; i++) {
+				eventFilter[defaultHide[i]] = false;
+			}
 		});
 		</script>
 	</body>
