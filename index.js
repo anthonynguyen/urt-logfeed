@@ -51,7 +51,11 @@ function ensureClientInit(cid) {
 
 function parseLine(line) {
 	var lineRE = /^\s+\d+?:\d+? (.+)$/;
-	line = lineRE.exec(line)[1];
+	var lineMatch = lineRE.exec(line);
+	if (!lineMatch) {
+		return null;
+	}
+	line = lineMatch[1];
 	if (line == "Pop!") {
 		var event = {type: "BombExplode", subject: {id: -1, name: null}, object: {id: -1, name: null}, data: {}};
 		return event;
