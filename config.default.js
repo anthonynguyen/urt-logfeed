@@ -19,6 +19,11 @@ config.exposeEvents = {
 	FlagDrop: true,
 	FlagReturn: true,
 	FlagCapture: true,
-	MapEnd: true
+	MapEnd: true,
+	BombDrop: true,
+	BombPickup: true,
+	BombPlant: true,
+	BombDefuse: true,
+	BombExplode: true
 }
 	

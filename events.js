@@ -202,6 +202,26 @@ eventParsers = {
 		var event = new Event("MapEnd");
 		event.data.reason = rawdata;
 		return event;
-	}
+	},
+	tossedParser: function(rawdata) {
+		var event = new Event("BombDrop");
+		event.subject.id = parseInt(rawdata);
+		return event;
+	},
+	collectedParser: function(rawdata) {
+		var event = new Event("BombPickup");
+		event.subject.id = parseInt(rawdata);
+		return event;
+	},
+	plantedParser: function(rawdata) {
+		var event = new Event("BombPlant");
+		event.subject.id = parseInt(rawdata);
+		return event;
+	},
+	defusedParser: function(rawdata) {
+		var event = new Event("BombDefuse");
+		event.subject.id = parseInt(rawdata);
+		return event;
+	},
 }
 

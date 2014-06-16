@@ -50,13 +50,25 @@ function ensureClientInit(cid) {
 }
 
 function parseLine(line) {
-	var eventRE = /^\s+\d+?:\d+? (.+?): ?(.*)$/;
+	var lineRE = /^\s+\d+?:\d+? (.+)$/;
+	line = lineRE.exec(line)[1];
+	if (line == "Pop!") {
+		var event = {type: "BombExplode", subject: {id: -1, name: null}, object: {id: -1, name: null}, data: {}};
+		return event;
+	}
+	var eventRE = /(.+?): ?(.*)/;
+	var bombRE = /Bomb (?:was|has been) (.+?) by (\d+)/;
 	var match = eventRE.exec(line);
-	if (!match) {
+	var bombMatch = bombRE.exec(line);
+	if (match) {
+		var eventType = match[1];
+		var rawEventData = match[2];
+	} else if (bombMatch) {
+		var eventType = bombMatch[1];
+		var rawEventData = bombMatch[2];
+	} else {
 		return null;
 	}
-	var eventType = match[1];
-	var rawEventData = match[2];
 	if (eventType + "Parser" in eventParsers) {
 		event = eventParsers[eventType + "Parser"](rawEventData);
 
@@ -132,6 +144,10 @@ function parseLine(line) {
 			 if (clients[event.subject.id].team == undefined) {
 				 clients[event.subject.id].team = event.data.flag;
 			}
+		} else if (event.type == "BombDrop" || event.type == "BombPickup" || event.type == "BombPlant") {
+			clients[event.subject.id].team = "Red";
+		} else if (event.type == "BombDefuse") {
+			clients[event.subject.id].team = "Blue";
 		}
 /*
 		if (event.type == "ClientTeamChange") {
