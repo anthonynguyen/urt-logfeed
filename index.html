@@ -55,6 +55,10 @@
 				position: absolute;
 				text-transform: uppercase;
 			}
+
+			.e-time {
+				float: right;
+			}
 			
 			.ev-data {
 				margin-left: 130px;
@@ -293,7 +297,7 @@
 				return;
 			}
 			var parts = window[event.type + "Formatter"](event);
-			var liText = '<li class="' + event.type + '"><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span></li>';
+			var liText = '<li class="' + event.type + '"><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span><span class="e-time">' + event.time + '</span></li>';
 			logList.innerHTML += liText;
 			window.scrollTo(0, document.body.scrollHeight);
 		});
