@@ -135,7 +135,7 @@ function parseLine(line) {
 			if (event.data.type == 0 &&
 				"team" in clients[event.subject.id] &&
 				"team" in clients[event.object.id]) {
-				if (clients[event.subject.id].team == clients[event.object.id].team) {
+				if (clients[event.subject.id].team == clients[event.object.id].team && clients[event.subject.id].team != "Green") {
 					event.data.type = 1;
 				}
 			}
