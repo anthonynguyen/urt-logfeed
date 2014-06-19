@@ -196,15 +196,7 @@ function parseLine(line) {
 	}
 }
 
-tail.on("line", function(line) {
-	var event = parseLine(line);
-	if (!!event) {
-		if (config.exposeEvents[event.type]) {
-			io.emit("event", event);
-			console.log("Event sent: " + event.type);
-		}
-	}
-});
+var connections = {};
 
 io.on('connection', function(socket) {
 	var availableEvents = [];
@@ -214,4 +206,22 @@ io.on('connection', function(socket) {
 		}
 	}
 	socket.emit("exposedEvents", availableEvents);
+	connections[socket.id] = {conn: socket};
 });
+
+io.on('disconnect', function(socket) {
+	delete connections[socket.id];
+});
+
+tail.on("line", function(line) {
+	var event = parseLine(line);
+	if (!!event) {
+		if (config.exposeEvents[event.type]) {
+			for (conn in connections) {
+				connections[conn].conn.emit("event", event);
+			}
+			console.log("Event sent: " + event.type);
+		}
+	}
+});
+
