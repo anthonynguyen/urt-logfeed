@@ -13,14 +13,17 @@
 			body {
 				-moz-box-sizing: border-box;
 				-webkit-box-sizing: border-box;
-				background-color: #eee;
 				box-sizing: border-box;
+				background-color: #eee;
 				font-family: 'Open Sans', sans-serif;
 				font-size: 11pt;
 				width: 100%;
 			}
 			
 			section#filter {
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
 				display: block;
 				float: left;
 				position: fixed;
@@ -88,7 +91,7 @@
 	</head>
 	<body>
 		<section id="filter">
-			&nbsp;
+			<button id="pause-stream" onclick="togglePause()">Pause stream</button>
 		</section>
 		<section id="logcontainer">
 			<ul id="log">
@@ -96,6 +99,16 @@
 		</section>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
+		var isPaused = false;
+		var togglePause = function() {
+			isPaused = !isPaused;
+			var pauseButton = document.getElementById("pause-stream");
+			if (isPaused) {
+				pauseButton.innerHTML = "Resume stream";
+			} else {
+				pauseButton.innerHTML = "Pause stream";
+			}
+		}
 		var getName = function(person) {
 			if (person.name != null) {
 				return '<span class="client">[' + person.id.toString() + ']' + person.name + '</span>';
@@ -276,8 +289,11 @@
 		var logList = document.getElementById("log");
 
 		socket.on('event', function(event){
+			if (isPaused || !eventFilter[event.type]) {
+				return;
+			}
 			var parts = window[event.type + "Formatter"](event);
-			var liText = '<li><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span></li>';
+			var liText = '<li class="' + event.type + '"><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span></li>';
 			logList.innerHTML += liText;
 			window.scrollTo(0, document.body.scrollHeight);
 		});
@@ -289,7 +305,27 @@
 			for (var i = 0; i < defaultHide.length; i++) {
 				eventFilter[defaultHide[i]] = false;
 			}
+
+			var filter = document.getElementById("filter");
+			for (var eType in eventFilter) {
+				if (eventFilter[eType]) {
+					var action = "Hide";
+				} else {
+					var action = "Show";
+				}
+				filter.innerHTML += '<button id="' + eType + '-toggle" onclick="toggleEvent(\'' + eType + '\')">' + action + ' ' + eType + '</button>';
+			}
 		});
+		var toggleEvent = function(e) {
+			eventFilter[e] = !eventFilter[e];
+			console.log(e);
+			var button = document.getElementById(e + "-toggle");
+			if (eventFilter[e]) {
+				button.innerHTML = "Hide " + e;
+			} else {
+				button.innerHTML = "Show " + e;
+			}
+		}
 		</script>
 	</body>
 </html>
