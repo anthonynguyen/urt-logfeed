@@ -103,16 +103,6 @@
 		</section>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
-		var isPaused = false;
-		var togglePause = function() {
-			isPaused = !isPaused;
-			var pauseButton = document.getElementById("pause-stream");
-			if (isPaused) {
-				pauseButton.innerHTML = "Resume stream";
-			} else {
-				pauseButton.innerHTML = "Pause stream";
-			}
-		}
 		var getName = function(person) {
 			if (person.name != null) {
 				return '<span class="client">[' + person.id.toString() + ']' + person.name + '</span>';
@@ -293,9 +283,6 @@
 		var logList = document.getElementById("log");
 
 		socket.on('event', function(event){
-			if (isPaused) {
-				return;
-			}
 			var parts = window[event.type + "Formatter"](event);
 			var liText = '<li class="' + event.type + '"><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span><span class="e-time">' + event.time + '</span></li>';
 			logList.innerHTML += liText;
@@ -321,6 +308,19 @@
 				filter.innerHTML += '<button id="' + eType + '-toggle" onclick="toggleEvent(\'' + eType + '\')">' + action + ' ' + eType + '</button>';
 			}
 		});
+		var isPaused = false;
+		var togglePause = function() {
+			isPaused = !isPaused;
+			var pauseButton = document.getElementById("pause-stream");
+			if (isPaused) {
+				socket.emit("pause");
+				pauseButton.innerHTML = "Resume stream";
+			} else {
+				socket.emit("unpause");
+				pauseButton.innerHTML = "Pause stream";
+			}
+		}
+
 		var toggleEvent = function(e) {
 			eventFilter[e] = !eventFilter[e];
 			var button = document.getElementById(e + "-toggle");
