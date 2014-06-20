@@ -206,7 +206,20 @@ io.on('connection', function(socket) {
 		}
 	}
 	socket.emit("exposedEvents", availableEvents);
-	connections[socket.id] = {conn: socket};
+	connections[socket.id] = {conn: socket, filter: {}};
+	for (var i = 0; i < availableEvents.length; i++) {
+		connections[socket.id].filter[availableEvents[i]] = true;
+	}
+	socket.on("hideEvent", function(event) {
+		if (event in connections[socket.id].filter) {
+			connections[socket.id].filter[event] = false;
+		}
+	});
+	socket.on("showEvent", function(event) {
+		if (event in connections[socket.id].filter) {
+			connections[socket.id].filter[event] = true;
+		}
+	});
 });
 
 io.on('disconnect', function(socket) {
@@ -218,7 +231,9 @@ tail.on("line", function(line) {
 	if (!!event) {
 		if (config.exposeEvents[event.type]) {
 			for (conn in connections) {
-				connections[conn].conn.emit("event", event);
+				if (connections[conn].filter[event.type]) {
+					connections[conn].conn.emit("event", event);
+				}
 			}
 			console.log("Event sent: " + event.type);
 		}

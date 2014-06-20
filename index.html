@@ -293,7 +293,7 @@
 		var logList = document.getElementById("log");
 
 		socket.on('event', function(event){
-			if (isPaused || !eventFilter[event.type]) {
+			if (isPaused) {
 				return;
 			}
 			var parts = window[event.type + "Formatter"](event);
@@ -308,6 +308,7 @@
 			var defaultHide = ["InitAuth", "ClientSpawn"];
 			for (var i = 0; i < defaultHide.length; i++) {
 				eventFilter[defaultHide[i]] = false;
+				socket.emit('hideEvent', defaultHide[i]);
 			}
 
 			var filter = document.getElementById("filter");
@@ -322,11 +323,12 @@
 		});
 		var toggleEvent = function(e) {
 			eventFilter[e] = !eventFilter[e];
-			console.log(e);
 			var button = document.getElementById(e + "-toggle");
 			if (eventFilter[e]) {
+				socket.emit('showEvent', e);
 				button.innerHTML = "Hide " + e;
 			} else {
+				socket.emit('hideEvent', e);
 				button.innerHTML = "Show " + e;
 			}
 		}
