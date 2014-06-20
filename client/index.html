@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+	<head>
+		<title>UrT Log Streamer</title>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
+		<style type="text/css">
+			* {
+				margin: 0;
+				outline: 0;
+				padding: 0;
+			}
+			
+			body {
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				background-color: #eee;
+				font-family: 'Open Sans', sans-serif;
+				font-size: 11pt;
+				width: 100%;
+			}
+			
+			section#filter {
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				display: block;
+				float: left;
+				position: fixed;
+				width: 200px;
+			}
+			
+			section#logcontainer {
+				display: block;
+				font-size: 0.8em;
+				margin-left: 200px;
+			}
+			
+			#log {
+				list-style-type: none;
+			}
+			
+			#log li {
+				background: #fff;
+				border: 1px solid #d2d2d2;
+				padding: 10px;
+				margin: 6px 15px;
+			}
+				
+			.ev-label {
+				color: #fff;
+				font-size: 0.9em;
+				margin-right: 10px;
+				padding: 2px 4px;
+				position: absolute;
+				text-transform: uppercase;
+			}
+
+			.e-time {
+				float: right;
+			}
+			
+			.ev-data {
+				margin-left: 130px;
+			}
+			
+			.client {
+				font-weight: bold;
+			}
+
+			.client:hover {
+				text-decoration: underline;
+			}
+		
+			.ev-kill {
+				background: #E73F3F;
+			}
+			
+			.ev-flag {
+				background: #F76C27;
+			}
+			
+			.ev-client {
+				background: #6D9DD1;
+			}
+			
+			.ev-game {
+				background: #7E45D3;
+			}
+			
+			.ev-chat {
+				background: #5EB89B;
+			}	
+		</style>
+	</head>
+	<body>
+		<section id="filter">
+			<button id="pause-stream" onclick="togglePause()">Pause stream</button>
+		</section>
+		<section id="logcontainer">
+			<ul id="log">
+			</ul>
+		</section>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/formatters.js"></script>
+		<script>
+		var socket = io();
+		var eventFilter = {};
+		var logList = document.getElementById("log");
+
+		socket.on('event', function(event){
+			var parts = window[event.type + "Formatter"](event);
+			var liText = '<li class="' + event.type + '"><span class="ev-label ' + parts.label + '">' + parts.type + '</span><span class="ev-data">' + parts.data + '</span><span class="e-time">' + event.time + '</span></li>';
+			logList.innerHTML += liText;
+			window.scrollTo(0, document.body.scrollHeight);
+		});
+		socket.on("exposedEvents", function(list) {
+			for (var i = 0; i < list.length; i++) {
+				eventFilter[list[i]] = true;
+			}
+			var defaultHide = ["InitAuth", "ClientSpawn"];
+			for (var i = 0; i < defaultHide.length; i++) {
+				eventFilter[defaultHide[i]] = false;
+				socket.emit('hideEvent', defaultHide[i]);
+			}
+
+			var filter = document.getElementById("filter");
+			for (var eType in eventFilter) {
+				if (eventFilter[eType]) {
+					var action = "Hide";
+				} else {
+					var action = "Show";
+				}
+				filter.innerHTML += '<button id="' + eType + '-toggle" onclick="toggleEvent(\'' + eType + '\')">' + action + ' ' + eType + '</button>';
+			}
+		});
+		var isPaused = false;
+		var togglePause = function() {
+			isPaused = !isPaused;
+			var pauseButton = document.getElementById("pause-stream");
+			if (isPaused) {
+				socket.emit("pause");
+				pauseButton.innerHTML = "Resume stream";
+			} else {
+				socket.emit("unpause");
+				pauseButton.innerHTML = "Pause stream";
+			}
+		}
+
+		var toggleEvent = function(e) {
+			eventFilter[e] = !eventFilter[e];
+			var button = document.getElementById(e + "-toggle");
+			if (eventFilter[e]) {
+				socket.emit('showEvent', e);
+				button.innerHTML = "Hide " + e;
+			} else {
+				socket.emit('hideEvent', e);
+				button.innerHTML = "Show " + e;
+			}
+		}
+		</script>
+	</body>
+</html>

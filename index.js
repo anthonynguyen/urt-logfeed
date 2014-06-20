@@ -19,13 +19,18 @@ function retFile(filename) {
 }
 
 function handler (req, res) {
-	var index = retFile("index.html");
-	if (!index) {
+	if (req.url == "/formatters.js") {
+		var file = retFile("client/formatters.js");
+	} else {
+		var file = retFile("client/index.html");
+	}
+
+	if (!file) {
 		res.writeHead(500);
-		res.end("Couldn't load index.html, sorry.");
+		res.end("Couldn't load " + req.url + ", sorry.");
 	} else {
 		res.writeHead(200);
-		res.end(index);
+		res.end(file);
 	}	
 }
 
