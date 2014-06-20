@@ -10,16 +10,23 @@ tail = new Tail(config.logPath);
 
 server.listen(3000);
 
-function handler (req, res) {
-	fs.readFile(__dirname + '/index.html', function (err, data) {
-		if (err) {
-			res.writeHead(500);
-			return res.end('Error loading index.html');
-		}
+function retFile(filename) {
+	try {
+		return fs.readFileSync(__dirname + "/" + filename);
+	} catch (e) {
+		return null;
+	}
+}
 
+function handler (req, res) {
+	var index = retFile("index.html");
+	if (!index) {
+		res.writeHead(500);
+		res.end("Couldn't load index.html, sorry.");
+	} else {
 		res.writeHead(200);
-		res.end(data);
-	});
+		res.end(index);
+	}	
 }
 
 var gameVars = null;
