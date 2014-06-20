@@ -238,11 +238,11 @@ io.on('connection', function(socket) {
 	socket.on("unpause", function() {
 		connections[socket.id].paused = false;
 	});
+	socket.on('disconnect', function() {
+		delete connections[socket.id];
+	});
 });
 
-io.on('disconnect', function(socket) {
-	delete connections[socket.id];
-});
 
 tail.on("line", function(line) {
 	var event = parseLine(line);
