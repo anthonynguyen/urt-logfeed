@@ -140,35 +140,35 @@ var MapEndFormatter = function(event) {
 var BombDropFormatter = function(event) {
 	var parts = {};
 	parts.type = "Bomb";
-	parts.label = "ev-flag";
+	parts.label = "ev-bomb";
 	parts.data = getName(event.subject) + " dropped the bomb.";
 	return parts;
 }
 var BombPickupFormatter = function(event) {
 	var parts = {};
 	parts.type = "Bomb";
-	parts.label = "ev-flag";
+	parts.label = "ev-bomb";
 	parts.data = getName(event.subject) + " picked up the bomb.";
 	return parts;
 }
 var BombPlantFormatter = function(event) {
 	var parts = {};
 	parts.type = "Bomb";
-	parts.label = "ev-flag";
+	parts.label = "ev-bomb";
 	parts.data = getName(event.subject) + " planted the bomb.";
 	return parts;
 }
 var BombDefuseFormatter = function(event) {
 	var parts = {};
 	parts.type = "Bomb";
-	parts.label = "ev-flag";
+	parts.label = "ev-bomb";
 	parts.data = getName(event.subject) + " defused the bomb.";
 	return parts;
 }
 var BombExplodeFormatter = function(event) {
 	var parts = {};
 	parts.type = "Bomb";
-	parts.label = "ev-flag";
+	parts.label = "ev-bomb";
 	parts.data = "The bomb exploded.";
 	return parts;
 }

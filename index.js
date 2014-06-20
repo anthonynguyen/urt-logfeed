@@ -70,7 +70,7 @@ function parseLine(line) {
 	var time = lineMatch[1];
 	line = lineMatch[2];
 	if (line == "Pop!") {
-		var event = {type: "BombExplode", subject: {id: -1, name: null}, object: {id: -1, name: null}, data: {}};
+		var event = {type: "BombExplode", time: time, subject: {id: -1, name: null}, object: {id: -1, name: null}, data: {}};
 		return event;
 	}
 	var eventRE = /(.+?): ?(.*)/;
