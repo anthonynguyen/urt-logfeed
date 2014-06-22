@@ -8,7 +8,7 @@ var getName = function(person) {
 
 var MapChangeFormatter = function(event) {
 	var parts = {};
-	parts.type = "Map Load";
+	parts.type = "Map";
 	parts.label = "ev-game";
 	parts.data = "Map changed to " + event.data.map;
 	return parts;
@@ -29,7 +29,7 @@ var InitAuthFormatter = function(event) {
 }
 var ShutdownGameFormatter = function(event) {
 	var parts = {};
-	parts.type = event.type;
+	parts.type = "Shutdown";
 	parts.label = "ev-game";
 	parts.data = "Game stopped.";
 	return parts;
