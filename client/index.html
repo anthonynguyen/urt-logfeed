@@ -26,14 +26,15 @@
 				box-sizing: border-box;
 				display: block;
 				float: left;
+				padding: 15px;
 				position: fixed;
-				width: 200px;
+				width: 240px;
 			}
 			
 			section#logcontainer {
 				display: block;
 				font-size: 0.8em;
-				margin-left: 200px;
+				margin-left: 240px;
 			}
 			
 			#log {
@@ -94,12 +95,83 @@
 			
 			.ev-chat {
 				background: #5EB89B;
-			}	
+			}
+
+			.filters {
+				display: none;
+			}
+
+			.filter-group-head {
+				color: #fff;
+				padding: 10px;
+				text-transform: uppercase;
+			}
+
+			.filter-group-head.ev-game {
+				color: #321B54;
+			}
+
+			.filter-group-head.ev-client {
+				color: #2A3D52;
+			}
+
+			.filter-group-head.ev-chat {
+				color: #1D382F;
+			}
+
+			.filter-group-head.ev-flag {
+				color: #662D10;
+			}
+
+			.filter-group-head.ev-bomb {
+				color: #38381D;
+			}
+
+			.filters.ev-game {
+				background: #BC8FFF;
+			}
+
+			.filters.ev-client {
+				background: #BDDCFF;
+			}
+
+			.filters.ev-chat {
+				background: #A1FFE1;
+			}
+
+			.filters.ev-flag {
+				background: #FFAF87;
+			}
+
+			.filters.ev-bomb {
+				background: #FFFFA1;
+			}
 		</style>
 	</head>
 	<body>
 		<section id="filter">
 			<button id="pause-stream" onclick="togglePause()">Pause stream</button>
+			<div class="filter-group" id="gameEvent-filters">
+				<div class="filter-group-head ev-game">Game events</div>
+				<div class="filters ev-game"></div>
+			</div>
+			<div class="filter-group" id="playerEvent-filters">
+				<div class="filter-group-head ev-client">Player events</div>
+				<div class="filters ev-client"></div>
+			</div>
+			<div class="filter-group" id="chatEvent-filters">
+				<div class="filter-group-head ev-chat">Chat events</div>
+				<div class="filters ev-chat"></div>
+			</div>
+			<div class="filter-group" id="flagEvent-filters">
+				<div class="filter-group-head ev-flag">Flag events</div>
+				<div class="filters ev-flag"></div>
+			</div>
+			<div class="filter-group" id="bombEvent-filters">
+				<div class="filter-group-head ev-bomb">Bomb events</div>
+				<div class="filters ev-bomb"></div>
+			</div>
+			
 		</section>
 		<section id="logcontainer">
 			<ul id="log">
@@ -135,7 +207,7 @@
 				} else {
 					var action = "Show";
 				}
-				filter.innerHTML += '<button id="' + eType + '-toggle" onclick="toggleEvent(\'' + eType + '\')">' + action + ' ' + eType + '</button>';
+				//filter.innerHTML += '<button id="' + eType + '-toggle" onclick="toggleEvent(\'' + eType + '\')">' + action + ' ' + eType + '</button>';
 			}
 		});
 		var isPaused = false;
@@ -162,6 +234,18 @@
 				button.innerHTML = "Show " + e;
 			}
 		}
+		var filterHeads = document.getElementsByClassName("filter-group-head");
+		for (var i = 0; i < filterHeads.length; i++) {
+			filterHeads[i].onclick = function() {
+				var gFilters = this.nextElementSibling;
+				if (gFilters.style.display == "block") {
+					gFilters.style.display = "none";
+				} else {
+					gFilters.style.display = "block";
+				}
+			}
+		}
+				
 		</script>
 	</body>
 </html>
