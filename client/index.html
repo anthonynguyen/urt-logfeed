@@ -146,6 +146,10 @@
 			.filters.ev-bomb {
 				background: #FFFFA1;
 			}
+
+			.toggler {
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
@@ -153,23 +157,52 @@
 			<button id="pause-stream" onclick="togglePause()">Pause stream</button>
 			<div class="filter-group" id="gameEvent-filters">
 				<div class="filter-group-head ev-game">Game events</div>
-				<div class="filters ev-game"></div>
+				<div class="filters ev-game">
+					<div class="toggler"><label for="toggle-MapChange">MapChange</label><input type="checkbox" class="filter-toggle" id="toggle-MapChange" checked /></div>
+					<div class="toggler"><label for="toggle-InitRound">InitRound</label><input type="checkbox" class="filter-toggle" id="toggle-InitRound" checked /></div>
+					<div class="toggler"><label for="toggle-InitAuth">InitAuth</label><input type="checkbox" class="filter-toggle" id="toggle-InitAuth" checked /></div>
+					<div class="toggler"><label for="toggle-ShutdownGame">ShutdownGame</label><input type="checkbox" class="filter-toggle" id="toggle-ShutdownGame" checked /></div>
+					<div class="toggler"><label for="toggle-SurvivorWinner">SurvivorWinner</label><input type="checkbox" class="filter-toggle" id="toggle-SurvivorWinner" checked /></div>
+					<div class="toggler"><label for="toggle-MapEnd">MapEnd</label><input type="checkbox" class="filter-toggle" id="toggle-MapEnd" checked /></div>
+					<div class="toggler"><label for="toggle-Kill">Kill</label><input type="checkbox" class="filter-toggle" id="toggle-Kill" checked /></div>
+				</div>
 			</div>
 			<div class="filter-group" id="playerEvent-filters">
 				<div class="filter-group-head ev-client">Player events</div>
-				<div class="filters ev-client"></div>
+				<div class="filters ev-client">
+					<div class="toggler"><label for="toggle-ClientConnect">ClientConnect</label><input type="checkbox" class="filter-toggle" id="toggle-ClientConnect" checked /></div>
+					<div class="toggler"><label for="toggle-ClientDisconnect">ClientDisconnect</label><input type="checkbox" class="filter-toggle" id="toggle-ClientDisconnect" checked /></div>
+					<div class="toggler"><label for="toggle-ClientRename">ClientRename</label><input type="checkbox" class="filter-toggle" id="toggle-ClientRename" checked /></div>
+					<div class="toggler"><label for="toggle-ClientTeamChange">ClientTeamChange</label><input type="checkbox" class="filter-toggle" id="toggle-ClientTeamChange" checked /></div>
+					<div class="toggler"><label for="toggle-ClientSpawn">ClientSpawn</label><input type="checkbox" class="filter-toggle" id="toggle-ClientSpawn" checked /></div>
+				</div>
 			</div>
 			<div class="filter-group" id="chatEvent-filters">
 				<div class="filter-group-head ev-chat">Chat events</div>
-				<div class="filters ev-chat"></div>
+				<div class="filters ev-chat">
+					<div class="toggler"><label for="toggle-say">say</label><input type="checkbox" class="filter-toggle" id="toggle-say" checked /></div>
+					<div class="toggler"><label for="toggle-sayteam">sayteam</label><input type="checkbox" class="filter-toggle" id="toggle-sayteam" checked /></div>
+				</div>
 			</div>
 			<div class="filter-group" id="flagEvent-filters">
 				<div class="filter-group-head ev-flag">Flag events</div>
-				<div class="filters ev-flag"></div>
+				<div class="filters ev-flag">
+					<div class="toggler"><label for="toggle-FlagPickup">FlagPickup</label><input type="checkbox" class="filter-toggle" id="toggle-FlagPickup" checked /></div>
+					<div class="toggler"><label for="toggle-FlagDrop">FlagDrop</label><input type="checkbox" class="filter-toggle" id="toggle-FlagDrop" checked /></div>
+					<div class="toggler"><label for="toggle-FlagReturn">FlagReturn</label><input type="checkbox" class="filter-toggle" id="toggle-FlagReturn" checked /></div>
+					<div class="toggler"><label for="toggle-FlagCapture">FlagCapture</label><input type="checkbox" class="filter-toggle" id="toggle-FlagCapture" checked /></div>
+				</div>
 			</div>
 			<div class="filter-group" id="bombEvent-filters">
 				<div class="filter-group-head ev-bomb">Bomb events</div>
-				<div class="filters ev-bomb"></div>
+				<div class="filters ev-bomb">
+					<div class="toggler"><label for="toggle-BombDrop">BombDrop</label><input type="checkbox" class="filter-toggle" id="toggle-BombDrop" checked /></div>
+					<div class="toggler"><label for="toggle-BombPickup">BombPickup</label><input type="checkbox" class="filter-toggle" id="toggle-BombPickup" checked /></div>
+					<div class="toggler"><label for="toggle-BombPlant">BombPlant</label><input type="checkbox" class="filter-toggle" id="toggle-BombPlant" checked /></div>
+					<div class="toggler"><label for="toggle-BombDefuse">BombDefuse</label><input type="checkbox" class="filter-toggle" id="toggle-BombDefuse" checked /></div>
+					<div class="toggler"><label for="toggle-BombExplode">BombExplode</label><input type="checkbox" class="filter-toggle" id="toggle-BombExplode" checked /></div>
+
+				</div>
 			</div>
 			
 		</section>
@@ -202,12 +235,20 @@
 
 			var filter = document.getElementById("filter");
 			for (var eType in eventFilter) {
-				if (eventFilter[eType]) {
-					var action = "Hide";
-				} else {
-					var action = "Show";
+				var e =	document.getElementById("toggle-" + eType);
+				e.parentNode.style.display = "block";
+				e.checked = eventFilter[eType];
+				e.onchange = function(e) {
+					var f = e.target.id;
+					var el = document.getElementById(f);
+					var ename = f.slice(7);
+					eventFilter[ename] = !eventFilter[ename];
+					if (eventFilter[ename]) {
+						socket.emit('showEvent', ename);
+					} else {
+						socket.emit('hideEvent', ename);
+					}
 				}
-				//filter.innerHTML += '<button id="' + eType + '-toggle" onclick="toggleEvent(\'' + eType + '\')">' + action + ' ' + eType + '</button>';
 			}
 		});
 		var isPaused = false;
@@ -223,17 +264,6 @@
 			}
 		}
 
-		var toggleEvent = function(e) {
-			eventFilter[e] = !eventFilter[e];
-			var button = document.getElementById(e + "-toggle");
-			if (eventFilter[e]) {
-				socket.emit('showEvent', e);
-				button.innerHTML = "Hide " + e;
-			} else {
-				socket.emit('hideEvent', e);
-				button.innerHTML = "Show " + e;
-			}
-		}
 		var filterHeads = document.getElementsByClassName("filter-group-head");
 		for (var i = 0; i < filterHeads.length; i++) {
 			filterHeads[i].onclick = function() {
