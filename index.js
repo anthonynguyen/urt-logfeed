@@ -21,6 +21,8 @@ function retFile(filename) {
 function handler (req, res) {
 	if (req.url == "/formatters.js") {
 		var file = retFile("client/formatters.js");
+	} else if (req.url == "/filter-groups.js") {
+		var file = retFile("client/filter-groups.js");
 	} else {
 		var file = retFile("client/index.html");
 	}
