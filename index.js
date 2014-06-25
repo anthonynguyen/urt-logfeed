@@ -64,7 +64,7 @@ function ensureClientInit(cid) {
 }
 
 function parseLine(line) {
-	var lineRE = /^\s*(\d+?:\d+?) (.+)$/;
+	var lineRE = /^\s*(\d+:\d+)\s?(.+)$/;
 	var lineMatch = lineRE.exec(line);
 	if (!lineMatch) {
 		return null;
